@@ -2,6 +2,10 @@ package menu;
 
 import java.util.Scanner;
 
+import service.InventoryService;
+
+import service.SupplierService;
+
 import service.LoginService;
 
 public class Menu
@@ -11,10 +15,13 @@ public class Menu
 	
 	private LoginService loginService;
 	
+	private SupplierService supplierService;
+	
 	private static final String DOUBLE_LINE = "================================================================================================================";
 	
 	private static final String SINGLE_LINE = "----------------------------------------------------------------------------------------------------------------";
 	
+	private InventoryService inventoryService;
 	
 	
 	/**===========================================================================
@@ -84,6 +91,8 @@ public class Menu
 	    }
 	    catch(NumberFormatException e)
 	    {
+	    	printStatus("ERROR", "Please enter a valid number.");
+	    	
 	        return -1;
 	    }
 	}
@@ -95,6 +104,10 @@ public class Menu
 		this.sc = sc;
 		
 		loginService = new LoginService(sc);
+		
+		inventoryService = new InventoryService(sc); 
+		
+		supplierService = new SupplierService(sc);
 	}
 	
 	
@@ -121,11 +134,16 @@ public class Menu
 
 	    	printFooter();
 	    	
-	    	System.out.print("\nEnter Choice : ");
 	    	
 	    	try
 	    	{
-	    		int userChoice = Integer.parseInt(sc.nextLine());
+	    		int userChoice = getChoice();;
+	    		
+	    		if(userChoice == -1)
+	    		{
+	    		    waitForEnter();
+	    		    continue;
+	    		}
 	    		
 	    		switch(userChoice)
 	    		{
@@ -162,11 +180,6 @@ public class Menu
 	    		}
 	    	}
 	    	
-	    	catch(NumberFormatException e)
-	    	{
-	    		System.out.println();
-	    	    printStatus("ERROR", "Please enter a valid number.");
-	    	}
 	    	
 	    	catch(Exception e)
 	    	{
@@ -195,42 +208,41 @@ public class Menu
 			
 			printFooter();
 			
-			System.out.print("\nEnter Choice : ");
 			
 			try
 			{
-				int choice = Integer.parseInt(sc.nextLine());
+				int choice = getChoice();
+				
+				if(choice == -1)
+				{
+				    waitForEnter();
+				    continue;
+				}
 				
 				switch(choice)
 				{
 				
 				case 1:
-					printStatus("INFO", 
-							"Product Module Coming Soon...");
-					waitForEnter();
+					productMenu();
 					break;
 					
 				case 2:
-					printStatus("INFO",
-                            "Supplier Module Coming Soon.");
+					supplierMenu();
 					waitForEnter();
                     break;
 
                 case 3:
-                    printStatus("INFO",
-                            "Inventory Module Coming Soon.");
+                    inventoryMenu();
                     waitForEnter();
                     break;
 
                 case 4:
-                    printStatus("INFO",
-                            "Reports Module Coming Soon.");
+                    reportsMenu();
                     waitForEnter();
                     break;
 
                 case 5:
-                    printStatus("INFO",
-                            "Change Password Coming Soon.");
+                	loginService.changePassword();
                     waitForEnter();
                     break;
 
@@ -254,6 +266,265 @@ public class Menu
 			}
 			
 		}
+	}
+	
+	
+	private void productMenu()
+	{
+		boolean running = true;
+		
+		while(running)
+		{
+			printHeader("PRODUCT MANAGEMENT");
+			
+			System.out.println("1. Add Product");
+			System.out.println("2. View Products");
+			System.out.println("3. Search Product");
+			System.out.println("4. Update Product");
+			System.out.println("5. Delete Product");
+			System.out.println("6. Back");
+			
+			printFooter();
+			
+			try
+			{
+				int choice = getChoice();
+				
+				if(choice == -1)
+				{
+				    waitForEnter();
+				    continue;
+				}
+				
+				switch(choice)
+				{
+				case 1:
+					inventoryService.addProduct();
+					waitForEnter();
+					break;
+					
+				case 2:
+                    inventoryService.viewProducts();
+                    waitForEnter();
+                    break;
+
+                case 3:
+                    inventoryService.searchProduct();
+                    waitForEnter();
+                    break;
+
+                case 4:
+                    inventoryService.updateProduct();
+                    waitForEnter();
+                    break;
+
+                case 5:
+                    inventoryService.deleteProduct();
+                    waitForEnter();
+                    break;
+
+                case 6:
+                    running = false;
+                    break;
+
+                default:
+                    printStatus("ERROR", "Invalid Menu Choice.");
+                    waitForEnter();
+				}
+			}
+			catch(Exception e)
+			{
+				printStatus("ERROR", "Unexpected Error : " + e.getMessage());
+				waitForEnter();
+			}
+			
+		}
+	}
+	
+	private void supplierMenu()
+	{
+		boolean running = true;
+		
+		while(running)
+		{
+			printHeader("SUPPLIER MANAGEMENT");
+			
+			System.out.println("1. Add Supplier");
+			System.out.println("2. View Suppliers");
+			System.out.println("3. Search Supplier");
+			System.out.println("4. Update Supplier");
+			System.out.println("5. Delete Supplier");
+			System.out.println("6. Back");
+			
+			printFooter();
+			
+			try
+			{
+				int choice = getChoice();
+				
+				if(choice == -1)
+				{
+				    waitForEnter();
+				    continue;
+				}
+				
+				switch(choice)
+				{
+				case 1:
+					supplierService.addSupplier();
+					waitForEnter();
+					break;
+					
+				case 2:
+					supplierService.viewSuppliers();
+                    waitForEnter();
+                    break;
+
+                case 3:
+                	supplierService.searchSupplier();
+                    waitForEnter();
+                    break;
+
+                case 4:
+                	supplierService.updateSupplier();
+                    waitForEnter();
+                    break;
+
+                case 5:
+                	supplierService.deleteSupplier();
+                    waitForEnter();
+                    break;
+
+                case 6:
+                    running = false;
+                    break;
+
+                default:
+                    printStatus("ERROR", "Invalid Menu Choice.");
+                    waitForEnter();
+				}
+			}
+			catch(Exception e)
+			{
+				printStatus("ERROR", "Unexpected Error : " + e.getMessage());
+				waitForEnter();
+			}
+			
+		}
+	}
+	
+	
+	
+	private void inventoryMenu()
+	{
+	    boolean running = true;
+
+	    while(running)
+	    {
+	        printHeader("INVENTORY MANAGEMENT");
+
+	        System.out.println("1. Stock In");
+	        System.out.println("2. Stock Out");
+	        System.out.println("3. Low Stock Report");
+	        System.out.println("4. Back");
+
+	        printFooter();
+
+	        try
+	        {
+	            int choice = getChoice();
+
+	            if(choice == -1)
+	            {
+	                waitForEnter();
+	                continue;
+	            }
+
+	            switch(choice)
+	            {
+	            case 1:
+	                inventoryService.stockIn();
+	                waitForEnter();
+	                break;
+
+	            case 2:
+	                inventoryService.stockOut();
+	                waitForEnter();
+	                break;
+
+	            case 3:
+	                inventoryService.lowStockReport();
+	                waitForEnter();
+	                break;
+
+	            case 4:
+	                running = false;
+	                break;
+
+	            default:
+	                printStatus("ERROR", "Invalid Menu Choice.");
+	                waitForEnter();
+	            }
+	        }
+	        catch(Exception e)
+	        {
+	            printStatus("ERROR", e.getMessage());
+	            waitForEnter();
+	        }
+	    }
+	}
+	
+	private void reportsMenu()
+	{
+	    boolean running = true;
+
+	    while(running)
+	    {
+	        printHeader("REPORTS");
+
+	        System.out.println("1. Total Products");
+	        System.out.println("2. Low Stock Report");
+	        System.out.println("3. Back");
+
+	        printFooter();
+
+	        try
+	        {
+	            int choice = getChoice();
+
+	            if(choice == -1)
+	            {
+	                waitForEnter();
+	                continue;
+	            }
+
+	            switch(choice)
+	            {
+	                case 1:
+	                    inventoryService.totalProducts();
+	                    waitForEnter();
+	                    break;
+
+	                case 2:
+	                    inventoryService.lowStockReport();
+	                    waitForEnter();
+	                    break;
+
+	                case 3:
+	                    running = false;
+	                    break;
+
+	                default:
+	                    printStatus("ERROR", "Invalid Menu Choice.");
+	                    waitForEnter();
+	            }
+	        }
+	        catch(Exception e)
+	        {
+	            printStatus("ERROR", e.getMessage());
+	            waitForEnter();
+	        }
+	    }
 	}
 	
 }
